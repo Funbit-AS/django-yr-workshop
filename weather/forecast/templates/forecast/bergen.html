@@ -45,7 +45,7 @@
           <td>{{ data.air_temperature }} °C</td>
           <td>{{ data.wind_speed }} m/s</td>
           <td>{{ data.cloud_area_fraction | percentage }}</td>
-          <td class="not-prose align-bottom"><img class="w-8 h-8 m-0 -mt-1" src="{{ data.symbol | yr_symbol }}" alt="{{ data.symbol }}"></td>
+          {% if data.symbol %}<td class="not-prose align-bottom"><img class="w-8 h-8 m-0 -mt-1" src="{{ data.symbol | yr_symbol }}" alt="{{ data.symbol }}"></td>{% else %}<td></td>{% endif %}
         </tr>
         {% endfor %}
         </tbody>
