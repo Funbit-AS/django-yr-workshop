@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load forecast_tags %}
+
+{% block content %}
+<div class="prose lg:prose-xl prose-invert max-w-none">
+
+    {# Thumbnail #}
+    <div class="flex not-prose">
+        <a class="hover:underline font-light " href="/">Weather</a>
+    </div>
+    
+    {# Heading #}
+    <div class="flex flex-col gap-5">
+        <div class="flex items-center gap-5 [&>*]:m-0">
+            <div class="grow flex flex-col gap-3 [&>*]:m-0">
+                <h1>Bergen</h1>
+                <p class="flex gap-2 xl:gap-3">
+                    <span>{{ forecast.latitude }} N</span>
+                    <span>/</span>
+                    <span>{{ forecast.longitude }} E</span>
+                    <span>/</span>
+                    <span>{{ forecast.altitude }} moh</span>
+            </div>
+            <img class="h-12 md:h-24 lg:h-36 m-0" src="{{ forecast.symbol | yr_symbol }}" alt="{{ forecast.symbol }}">
+        </div>
+        <div class="h-1 w-full rounded-md bg-gradient-to-r from-indigo-600 to-pink-600 p-1"></div>
+    </div>
+   
+
+    {# Data #}
+    <table class="table-auto">
+        <thead>
+          <tr>
+            <th>Tid</th>
+            <th>Temperatur</th>
+            <th>Vindhastighet</th>
+            <th>Skydekke</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for data in forecast.timeseries %}
+        <tr>
+          <td>{{ data.time | date:"D j. b H:i" }}</td>
+          <td>{{ data.air_temperature }} °C</td>
+          <td>{{ data.wind_speed }} m/s</td>
+          <td>{{ data.cloud_area_fraction | percentage }}</td>
+          <td class="not-prose align-bottom"><img class="w-8 h-8 m-0 -mt-1" src="{{ data.symbol | yr_symbol }}" alt="{{ data.symbol }}"></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+
+</div>
+{% endblock content %}

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "forecast",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -54,7 +55,7 @@ ROOT_URLCONF = "weather.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "weather" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -76,7 +77,7 @@ WSGI_APPLICATION = "weather.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR /  "db.sqlite3",
     }
 }
 
@@ -103,13 +104,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "nb-no"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Oslo"
 
 USE_I18N = True
 
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
