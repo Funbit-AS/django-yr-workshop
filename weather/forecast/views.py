@@ -2,42 +2,16 @@ from dateutil import parser
 
 import requests
 
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from .models import Location
-
-"""
-----------------------------
-YOUR MISSION
-----------------------------
-
-Good news! Our app now supports multiple Locations and comes preloaded with Bergen, Oslo,
-Tromsø and Kristiansand.
-
-Our app now has two views:
-- `index` which lists out Locations
-- `location` which fetches and presents the forecast for a chosen Location.
-
-The problem is neither of them work... yet!
-
-See the comments in each view function that tell you what you need to do.
-
-TIPS:
-- You can add more Locations using Django's built-in admin site. To log in to the admin site,
-  first create a superuser for yourself by running `python manage.py createsuperuser`
-
-"""
 
 
 def index(request):
     """
     The site homepage, where we list out Locations.
     """
-    # Your mission (part 1 of 2)
-    # - Query the database to fetch out all the Location objects, sorted alphabetically
-    #   by name.
-    # - Replace the empty list in the line under with your `Location` `QuerySet`
-    locations = []
+    locations = Location.objects.order_by("name")
     return render(request, "forecast/index.html", context={"locations": locations})
 
 
@@ -46,16 +20,7 @@ def location(request, pk: int):
     Fetches and presents weather forecast for Location whose primary key is given by the
     `pk` argument.
     """
-    # Your mission (part 2 of 2)
-    # - This view is as it was at the end of the last exercise.
-    # - It is still hardcoded to fetch Bergen's forecast
-    # - You need to query the database for the Location with the primary key (pk) value
-    #   passed in as an argument to this function.
-    # - Then use the location's coordinates (rather than Bergen's) in the API call to Yr.
-    # - If there is no Location in db with the given `pk` then return a 404 response
-    # - No changes are needed to the data transformations we do with the API data.
-
-    location = None  # Replace None with Location retrieved from db
+    location = get_object_or_404(Location, pk=pk)
 
     # Fetch the location's forceast, ignoring any errors (to keep example code simple..!)
     r = requests.get(
@@ -63,7 +28,7 @@ def location(request, pk: int):
         headers={
             "User-Agent": "DjangoWorkshop github.com/Funbit-AS/django-yr-workshop"
         },
-        params={"lat": 60.3929, "lon": 5.3241},
+        params={"lat": location.latitude, "lon": location.longitude},
         timeout=5,
     )
 
