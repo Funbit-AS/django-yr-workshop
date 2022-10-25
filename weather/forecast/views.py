@@ -1,21 +1,70 @@
-from datetime import datetime
 from dateutil import parser
 
 import requests
 
-from django.utils import timezone
 from django.shortcuts import render
 
+from .models import Location
 
-def forecast_bergen(request):
+"""
+----------------------------
+YOUR MISSION
+----------------------------
+
+Good news! Our app now supports multiple Locations and comes preloaded with Bergen, Oslo,
+Tromsø and Kristiansand.
+
+Our app now has two views:
+- `index` which lists out Locations
+- `location` which fetches and presents the forecast for a chosen Location.
+
+The problem is neither of them work... yet!
+
+See the comments in each view function that tell you what you need to do.
+
+TIPS:
+- You can add more Locations using Django's built-in admin site. To log in to the admin site,
+  first create a superuser for yourself by running `python manage.py createsuperuser`
+
+"""
+
+
+def index(request):
     """
-    Collects weather forecast for Bergen and feeds it to the bergen template.
+    The site homepage, where we list out Locations.
     """
-    # Fetch forceast for Bergen, ignoring any errors (to keep example code simple..!)
+    # Your mission (part 1 of 2)
+    # - Query the database to fetch out all the Location objects, sorted alphabetically
+    #   by name.
+    # - Replace the empty list in the line under with your `Location` `QuerySet`
+    locations = []
+    return render(request, "forecast/index.html", context={"locations": locations})
+
+
+def location(request, pk: int):
+    """
+    Fetches and presents weather forecast for Location whose primary key is given by the
+    `pk` argument.
+    """
+    # Your mission (part 2 of 2)
+    # - This view is as it was at the end of the last exercise.
+    # - It is still hardcoded to fetch Bergen's forecast
+    # - You need to query the database for the Location with the primary key (pk) value
+    #   passed in as an argument to this function.
+    # - Then use the location's coordinates (rather than Bergen's) in the API call to Yr.
+    # - If there is no Location in db with the given `pk` then return a 404 response
+    # - No changes are needed to the data transformations we do with the API data.
+
+    location = None  # Replace None with Location retrieved from db
+
+    # Fetch the location's forceast, ignoring any errors (to keep example code simple..!)
     r = requests.get(
         url="https://api.met.no/weatherapi/locationforecast/2.0/compact",
-        headers={"User-Agent": "DjangoWorkshop github.com/Funbit-AS/django-yr-workshop"},
-        params={"lat": 60.3929,"lon": 5.3241}
+        headers={
+            "User-Agent": "DjangoWorkshop github.com/Funbit-AS/django-yr-workshop"
+        },
+        params={"lat": 60.3929, "lon": 5.3241},
+        timeout=5,
     )
 
     # Requests can convert the Yr-response's JSON body into a nice Python dict for us
@@ -35,7 +84,7 @@ def forecast_bergen(request):
         return as a new dict that is 'template ready'
         """
         measurements = datapoint["data"]["instant"]["details"]
-        
+
         try:
             # Watch out! Not all datapoints have symbols
             symbol = datapoint["data"]["next_1_hours"]["summary"]["symbol_code"]
@@ -47,21 +96,23 @@ def forecast_bergen(request):
             "air_temperature": measurements["air_temperature"],
             "wind_speed": measurements["wind_speed"],
             "cloud_area_fraction": measurements["cloud_area_fraction"],
-            "symbol": symbol
+            "symbol": symbol,
         }
 
     # Apply our helper function to each datapoint in the Yr timeseries list
-    timeseries = [
-        parse_timeseries(point) for point in data["properties"]["timeseries"]
-    ]
+    timeseries = [parse_timeseries(point) for point in data["properties"]["timeseries"]]
 
     # Pass the real values we have gathered to the template
     forecast = {
-        "latitude":latitude,
+        "latitude": latitude,
         "longitude": longitude,
         "altitude": altitude,
         "symbol": timeseries[0]["symbol"],  # Use symbol from first timeseries datapoint
-        "timeseries": timeseries
+        "timeseries": timeseries,
     }
 
-    return render(request, "forecast/bergen.html", context={"forecast": forecast})
+    return render(
+        request,
+        "forecast/location.html",
+        context={"location": location, "forecast": forecast},
+    )

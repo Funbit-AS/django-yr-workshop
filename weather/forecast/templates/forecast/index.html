@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load forecast_tags %}
+
+{% block content %}
+<div class="prose lg:prose-xl prose-invert max-w-none">
+
+    {# Breadcrumbs #}
+    <div class="flex not-prose">
+        <a class="hover:underline font-light " href="{% url 'index' %}">Weather</a>
+    </div>
+    
+    {# Heading #}
+    <div class="flex flex-col gap-5">
+        <div class="flex items-center gap-5 [&>*]:m-0">
+            <div class="grow flex flex-col gap-3 [&>*]:m-0">
+                <h1>Weather app</h1>
+                <p>Because you can't have too many weather apps.</p>
+            </div>
+            <img class="h-12 md:h-24 lg:h-36 m-0" src="{{ forecast.symbol | yr_symbol }}" alt="{{ forecast.symbol }}">
+        </div>
+    </div>
+   
+
+    {# Data #}
+    {% if locations %}
+      <div class="not-prose grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        {% for location in locations %}
+        <a class="bg-gradient-to-br from-indigo-600 to-pink-600 hover:from-pink-600 hover:to-indigo-600 transform hover:scale-[1.02] hover:cursor-pointer rounded-sm p-1" href="{{ location.get_absolute_url }}">
+          <div class="bg-gray-800 p-4">
+            <h3 class="text-3xl font-semibold text-white mb-4">{{ location.name }}</h3>
+            <p class="">{{ location.latitude }} N</p>
+            <p class="">{{ location.longitude }} E</p>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    {% else %}
+    <p>No locations available.</p>
+    {% endif %}
+
+
+</div>
+{% endblock content %}

@@ -4,22 +4,25 @@
 {% block content %}
 <div class="prose lg:prose-xl prose-invert max-w-none">
 
-    {# Thumbnail #}
-    <div class="flex not-prose">
-        <a class="hover:underline font-light " href="/">Weather</a>
-    </div>
+    {# Breadcrumbs #}
+    <div class="flex gap-2 xl:gap-3 not-prose">
+        <a class="hover:underline font-light " href="{% url 'index' %}">Weather</a>
+        <span>/</span>
+        <p class="font-light " href="{{ location.get_absolute_url }}">{{ location.name | default:"???" }}</p>
+      </div>
     
     {# Heading #}
     <div class="flex flex-col gap-5">
         <div class="flex items-center gap-5 [&>*]:m-0">
             <div class="grow flex flex-col gap-3 [&>*]:m-0">
-                <h1>Bergen</h1>
+                <h1>{{ location.name | default:"???" }}</h1>
                 <p class="flex gap-2 xl:gap-3">
                     <span>{{ forecast.latitude }} N</span>
                     <span>/</span>
                     <span>{{ forecast.longitude }} E</span>
                     <span>/</span>
                     <span>{{ forecast.altitude }} moh</span>
+                </p>
             </div>
             <img class="h-12 md:h-24 lg:h-36 m-0" src="{{ forecast.symbol | yr_symbol }}" alt="{{ forecast.symbol }}">
         </div>
