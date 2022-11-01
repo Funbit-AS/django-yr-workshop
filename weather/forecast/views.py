@@ -1,3 +1,4 @@
+from time import sleep
 from dateutil import parser
 
 import requests
@@ -5,6 +6,25 @@ import requests
 from django.shortcuts import get_object_or_404, render
 
 from .models import Location
+
+
+def fetch_forecast(location: Location):
+    """
+    Fetches the forecast for a the given location
+    """
+    # Deliberately make this slow to highlight why we might want to cache API calls like this.
+    sleep(3)
+    r = requests.get(
+        url="https://api.met.no/weatherapi/locationforecast/2.0/compact",
+        headers={
+            "User-Agent": "DjangoWorkshop github.com/Funbit-AS/django-yr-workshop"
+        },
+        params={"lat": location.latitude, "lon": location.longitude},
+        timeout=5,
+    )
+
+    # Requests can convert the Yr-response's JSON body into a nice Python dict for us
+    return r.json()
 
 
 def index(request):
@@ -23,17 +43,7 @@ def location(request, pk: int):
     location = get_object_or_404(Location, pk=pk)
 
     # Fetch the location's forceast, ignoring any errors (to keep example code simple..!)
-    r = requests.get(
-        url="https://api.met.no/weatherapi/locationforecast/2.0/compact",
-        headers={
-            "User-Agent": "DjangoWorkshop github.com/Funbit-AS/django-yr-workshop"
-        },
-        params={"lat": location.latitude, "lon": location.longitude},
-        timeout=5,
-    )
-
-    # Requests can convert the Yr-response's JSON body into a nice Python dict for us
-    data = r.json()
+    data = fetch_forecast(location)
 
     # Now we need to wrangle the data into our forecast format
     # - Again, no error handling for now, we blindly trust the Yr API docs.
