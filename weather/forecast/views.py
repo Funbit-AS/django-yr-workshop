@@ -65,40 +65,24 @@ def location(request, pk: int):
     """
     location = get_object_or_404(Location, pk=pk)
 
-    # -------------------------------------- YOUR MISSION --------------------------------------
+    # Look in the cache for a forecast for this location
+    cache_key = f"FORECAST_{location.pk}"  # Needs to be unique per location
+    data = cache.get(key=cache_key)
 
-    # It's wasteful for us to fetch the forecast from Yr for every page request when we know
-    # that a forecast from 5 minutes ago (or longer) is still fine to use
-
-    # If we're not careful Yr will start throttling our requests which will break our app.
-
-    # In this exercise the API call to Yr has been moved out of this view function and put in
-    # its own function 'fetch_forecast'.
-
-    # This new function returns both the yr data we have already been using as well as when the
-    # data expires.
-
-    # We want to minimise how often we call this function by using caching to save Yr responses
-    # for a period of time. If we have a value in the cache, we can use that rather than fetch
-    # new values. Only if we have no value in the cache (or the value we have has expired) do we
-    # want to call the function.
-
-    # A 3 second sleep penalty has been added to fetch_forecast to simulate a slow API request.
-
-    # Tips:
-    # - Relevant docs: https://docs.djangoproject.com/en/4.1/topics/cache/#the-low-level-cache-api
-    # - Use the default cache. This gets wiped every time your local server restarts.
-    # - Make sure you cache each location's forecast with a unique key
-    # - Start by expiring forecasts after, say, 10 seconds.
-    # - Then see if you can use the expires_at value to expire forecasts when Yr wants us to
-    # - Replace the two lines that follow this comment with your improved caching functionality.
-    # - Everything can stay the same.
-
-    # ----------------------------------------------------------------------------------------
-
-    # Fetch data from yr
-    yr_response = fetch_forecast(location=location)
-    data = yr_response.data
+    if not data:
+        # We didn't have a suitable value in the cache.
+        # We have either never fetched this forecast or the data we have has expired
+        # We will have to get fresh data from Yr
+        logger.info("🐢  No suitable value found in cache ")
+        yr_response = fetch_forecast(location=location)
+        data = yr_response.data
+        # Work out how long it is until this data expires
+        # - Just incase, use max to ensure this is never negative
+        ttl = (yr_response.expires_at - timezone.now()).seconds
+        logger.info("... this forecast will expire in %s seconds", ttl)
+        cache.set(key=cache_key, value=data, timeout=ttl)
+    else:
+        logger.info("🏎  Using a cached value")
 
     # Now we need to wrangle the data into our forecast format
     # - Again, no error handling for now, we blindly trust the Yr API docs.
