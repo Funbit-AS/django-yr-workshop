@@ -22,21 +22,22 @@
    
 
     {# Data #}
-    {% if locations %}
-      <div class="not-prose grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-        {% for location in locations %}
-        <a class="bg-gradient-to-br from-indigo-600 to-pink-600 hover:from-pink-600 hover:to-indigo-600 transform hover:scale-[1.02] hover:cursor-pointer rounded-sm p-1" href="{{ location.get_absolute_url }}">
-          <div class="bg-gray-800 p-4">
-            <h3 class="text-3xl font-semibold text-white mb-4">{{ location.name }}</h3>
-            <p class="">{{ location.latitude }} N</p>
-            <p class="">{{ location.longitude }} E</p>
-          </div>
-        </a>
-        {% endfor %}
-      </div>
-    {% else %}
-    <p>No locations available.</p>
-    {% endif %}
+    <div class="not-prose grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-10">
+      {% for location in locations %}
+      <a class="min-h-[10rem] md:min-h-[11rem] bg-gradient-to-br from-indigo-600 to-pink-600 hover:from-pink-600 hover:to-indigo-600 transform hover:scale-[1.02] hover:cursor-pointer rounded-sm p-1" href="{{ location.get_absolute_url }}">
+        <div class="bg-gray-800 p-4 h-full">
+          <h3 class="text-3xl font-semibold text-white mb-4">{{ location.name }}</h3>
+          <p class="">{{ location.latitude }} N</p>
+          <p class="">{{ location.longitude }} E</p>
+        </div>
+      </a>
+      {% endfor %}
+      <a class="min-h-[10rem] md:min-h-[11rem] bg-gradient-to-br from-white to-pink-600 hover:from-pink-600 hover:to-white transform hover:scale-[1.02] hover:cursor-pointer rounded-sm p-1" href="{% url 'new-location' %}">
+        <div class="bg-gray-800 p-4 h-full">
+          <h3 class="text-3xl font-semibold text-white mb-4">Add a location</h3>
+        </div>
+      </a>
+    </div>
 
 
 </div>

@@ -6,10 +6,10 @@
 
     {# Breadcrumbs #}
     <div class="flex gap-2 xl:gap-3 not-prose">
-        <a class="hover:underline font-light " href="{% url 'index' %}">Weather</a>
-        <span>/</span>
-        <p class="font-light " href="{{ location.get_absolute_url }}">{{ location.name | default:"???" }}</p>
-      </div>
+      <a class="hover:underline font-light " href="{% url 'index' %}">Weather</a>
+      <span>/</span>
+      <p class="font-light">{{ location.name | default:"???" }}</p>
+    </div>
     
     {# Heading #}
     <div class="flex flex-col gap-5">

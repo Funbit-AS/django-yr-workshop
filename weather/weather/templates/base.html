@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography,forms"></script>
+  <style type="text/tailwindcss">
+    @layer components {
+      .errorlist {
+        @apply text-indigo-300 text-sm list-none my-3 pl-0;
+      }
+    }
+  </style>
 </head>
 <body class="container mx-auto p-10 md:p-20 lg:p-40 lg:py-32 bg-gray-800 text-white">
   {% block content %}

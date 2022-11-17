@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load forecast_tags %}
+
+{% block content %}
+<div class="prose lg:prose-xl prose-invert max-w-none">
+
+    {# Breadcrumbs #}
+    <div class="flex gap-2 xl:gap-3 not-prose">
+      <a class="hover:underline font-light " href="{% url 'index' %}">Weather</a>
+      <span>/</span>
+      <p class="font-light">Add location</p>
+    </div>
+    
+    {# Heading #}
+    <div class="my-5">
+      <h1>Add a location</h1>
+    </div>
+   
+    {% if form %}
+      <form class="mt-8 max-w-md grid grid-cols-1 gap-10" action="{% url 'new-location' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input class="text-white bg-gradient-to-br from-indigo-600 to-pink-600 hover:from-pink-600 hover:to-indigo-600 transform hover:scale-[1.05] hover:cursor-pointer focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 focus:outline-none dark:focus:ring-blue-800" type="submit" value="Add location">
+    </form>
+    {% endif %}
+
+</div>
+{% endblock content %}
