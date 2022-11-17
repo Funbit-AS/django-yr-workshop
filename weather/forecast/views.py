@@ -8,7 +8,7 @@ import logging
 import requests
 
 from django.core.cache import cache
-from django.views.generic import TemplateView
+from django.views.generic.edit import CreateView
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render
 
@@ -133,19 +133,8 @@ def location(request, pk: int):
     )
 
 
-class CreateLocationView(TemplateView):
-    """
-    ----------- YOUR MISSION ------------
-    This is a class based view. Django comes with a bunch of different class based views
-    that cover a lot of common use cases.
-
-    At the moment this view is subclassing TemplateView which is a very simple view that
-    just renders the given template.
-
-    Your mission is to convert this view into one that can create a new Location object
-    and save it to the database.
-
-    As before, the template is already set up for you. You only need to work on the view.
-    """
-
+class CreateLocationView(CreateView):
     template_name = "forecast/new_location.html"
+
+    model = Location
+    fields = ["name", "latitude", "longitude"]
