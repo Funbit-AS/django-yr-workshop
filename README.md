@@ -5,7 +5,7 @@ An introduction to Django workshop using Yr's open API.
 
 ### Setup
 
-1. Fork this repo
+1. [Download project's source code](https://github.com/Funbit-AS/django-yr-workshop/tags) for one of the tagged exercises or solutions.
 2. Navigate into the weather folder
 ```bash
 cd weather
