@@ -16,10 +16,10 @@ cd weather
 python -m venv env
 # Activate: Macos / Linux
 source env/bin/activate
-# Activate: Windows cmd.exe
-source env/Scripts/activate.bat
+# Activate: Windows Command Prompt/cmd.exe
+env\Scripts\activate.bat
 # Activate: Windows Powershell
-source env/Scripts/Activate.ps1
+env\Scripts\Activate.ps1
 ```
 4. Install requirements
 ```bash
